@@ -15,22 +15,33 @@ def gensim():
 
     if request.args.get("positive") is not None and request.args.get("negative") is not None:
         flag = True
-        positive = request.args.get("positive").split(",")
-        negative = request.args.get("negative").split(",")
+        p = request.args.get("positive")
+        n = request.args.get("negative")
 
-        for i in positive:
-            if not model.wv.has_index_for(i):
-                print(i + " was not in positive")
-                flag = False
+        positive = p.split(",")
+        negative = n.split(",")
 
-        for i in negative:
-            if not model.wv.has_index_for(i):
-                print(i + " was not in negative")
-                flag = False
+        if p.lower() != "_none_":
+            for i in positive:
+                if not model.wv.has_index_for(i):
+                    print(i + " was not in positive")
+                    flag = False
+
+        print(request.args.get("negative").lower())
+        if n.lower() != "_none_":
+            for i in negative:
+                if not model.wv.has_index_for(i):
+                    print(i + " was not in negative")
+                    flag = False
 
         if flag:
-            return str(
-                model.wv.most_similar(positive=positive, negative=negative))
+
+            similar = model.wv.most_similar(positive=positive if p != "_none_" else [],
+                                            negative=negative if n != "_none_" else [])
+            entries = []
+            for value in similar:
+                entries.append(value[0])
+            return {"entries": entries}
 
         else:
             return "NotFound"
