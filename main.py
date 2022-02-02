@@ -1,15 +1,20 @@
 from flask import Flask, request
 from gensim.models import word2vec
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route('/')
+@cross_origin()
 def hello_world():  # put application's code here
     return 'Hello World!'
 
 
 @app.route("/gensim")
+@cross_origin()
 def gensim():
     model = word2vec.Word2Vec.load("result.model")
 
