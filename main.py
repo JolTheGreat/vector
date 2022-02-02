@@ -16,7 +16,8 @@ def hello_world():  # put application's code here
 @app.route("/gensim", methods=["post"])
 @cross_origin()
 def gensim():
-    if request.origin is "https://vectormaths.netlify.app":
+    print(request.origin)
+    if request.origin == "https://vectormaths.netlify.app":
         model = word2vec.Word2Vec.load("result.model")
 
         if request.args.get("positive") is not None and request.args.get("negative") is not None:
@@ -53,6 +54,8 @@ def gensim():
                 return "NotFound"
         else:
             return "Error: Please check query parameters"
+    else:
+        return "Error"
 
 
 if __name__ == '__main__':
